@@ -1,22 +1,28 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import "./App.css";
 
 function App() {
-  const [message, setMessage] = useState(""); // state to hold backend message
+  const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    // when component loads, fetch from backend
-    fetch("http://localhost:3001/hello")
-      .then((res) => res.text()) // get text response
-      .then((data) => setMessage(data)) // store in state
-      .catch((err) => console.error("Error fetching:", err));
+    fetch("http://localhost:3001/todos")
+      .then(res => res.json())
+      .then(data => setTodos(data))
+      .catch(err => console.error("Error fetching todos:", err));
   }, []);
 
   return (
     <div className="App">
-      <h1>Frontend + Backend Test</h1>
-      <p>Message from backend: {message}</p>
+      <h1>My Todo List</h1>
+      <ul>
+        {todos.map(todo => (
+          <li key={todo.id}>
+            {todo.completed ? <s>{todo.text}</s> : todo.text}
+          </li>
+        ))}
+      </ul>
     </div>
-  );
+  )
 }
 
 export default App;
